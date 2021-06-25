@@ -36,6 +36,21 @@ fun Application.module(testing: Boolean = false) {
 
         route("/weather") {
             get("/summary") {
+                val unit = when (call.request.queryParameters["unit"]) {
+                    "celsius" -> TemperatureUnit.Celsius
+                    "fahrenheit" -> TemperatureUnit.Fahrenheit
+                    else -> {
+                        call.respond(HttpStatusCode.BadRequest, "unit variable must be 'celsius' or 'fahrenheit'")
+                        return@get
+                    }
+                }
+                val locations = call.request.queryParameters["locations"]?.split(",")
+                if (locations == null) {
+                    call.respond(HttpStatusCode.BadRequest, "locations is not provided")
+                    return@get
+                }
+                println("unit: $unit")
+                println("locations: $locations")
                 call.respond("summary")
             }
 
@@ -45,9 +60,11 @@ fun Application.module(testing: Boolean = false) {
                     call.respond(HttpStatusCode.BadRequest, "location id must be valid int")
                     return@get
                 }
+                println("locationsId: $locationId")
                 call.respond("location:$locationId")
             }
         }
     }
 }
 
+enum class TemperatureUnit { Celsius, Fahrenheit }
