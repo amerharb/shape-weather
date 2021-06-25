@@ -53,7 +53,10 @@ fun Application.module(testing: Boolean = false) {
                 println("locations: $locations")
 
                 //TODO: replace mock date
-                call.respond("summary")
+                call.respond(Summary(
+                    tempUnit = unit,
+                    locations = locations.map { LocationTemp(location = it, temp = 10) }
+                ))
             }
 
             get("/locations/{locationId}") {
@@ -69,7 +72,7 @@ fun Application.module(testing: Boolean = false) {
                     Location(
                         location = locationId,
                         tempUnit = TemperatureUnit.Celsius,
-                        arrayOf(20, 18, 23, 30, 25)
+                        listOf(20, 18, 23, 30, 25)
                     )
                 )
             }

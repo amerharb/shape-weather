@@ -24,12 +24,33 @@ class ApplicationTest {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/weather/summary?unit=celsius&locations=cph,mmx").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("summary", response.content)
+                assertEquals(
+                    gson.toJson(
+                        Summary(
+                            tempUnit = TemperatureUnit.Celsius,
+                            locations = listOf(
+                                LocationTemp("cph", 10),
+                                LocationTemp("mmx", 10),
+                            ),
+                        )
+                    ),
+                    response.content,
+                )
             }
-            handleRequest(HttpMethod.Get, "/weather/summary?unit=fahrenheit&locations=cph,mmx").apply {
+            handleRequest(HttpMethod.Get, "/weather/summary?unit=fahrenheit&locations=cph,sto").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("summary", response.content)
-            }
+                assertEquals(
+                    gson.toJson(
+                        Summary(
+                            tempUnit = TemperatureUnit.Fahrenheit,
+                            locations = listOf(
+                                LocationTemp("cph", 10),
+                                LocationTemp("sto", 10),
+                            ),
+                        )
+                    ),
+                    response.content,
+                )            }
             handleRequest(HttpMethod.Get, "/weather/summary?").apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())
             }
@@ -55,9 +76,10 @@ class ApplicationTest {
                         Location(
                             location = "cph",
                             tempUnit = TemperatureUnit.Celsius,
-                            arrayOf(20, 18, 23, 30, 25)
+                            listOf(20, 18, 23, 30, 25)
                         )
-                    ), response.content
+                    ),
+                    response.content,
                 )
             }
             handleRequest(HttpMethod.Get, "/weather/locations/").apply {
