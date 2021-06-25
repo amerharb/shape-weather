@@ -1,12 +1,12 @@
 package com.amerharb.shape
 
 import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
 import io.ktor.features.*
-import io.ktor.routing.*
-import io.ktor.http.*
 import io.ktor.gson.*
+import io.ktor.http.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -34,17 +34,19 @@ fun Application.module(testing: Boolean = false) {
             call.respondText("Weather API Assignment for SHAPE", contentType = ContentType.Text.Plain)
         }
 
-        get("/weather/summary") {
-            call.respond("summary")
-        }
-
-        get("/weather/locations/{locationId}") {
-            val locationId = call.parameters["locationId"]?.toIntOrNull()
-            if (locationId == null) {
-                call.respond(HttpStatusCode.BadRequest, "location id must be valid int")
-                return@get
+        route("/weather") {
+            get("/summary") {
+                call.respond("summary")
             }
-            call.respond("location:$locationId")
+
+            get("/locations/{locationId}") {
+                val locationId = call.parameters["locationId"]?.toIntOrNull()
+                if (locationId == null) {
+                    call.respond(HttpStatusCode.BadRequest, "location id must be valid int")
+                    return@get
+                }
+                call.respond("location:$locationId")
+            }
         }
     }
 }
