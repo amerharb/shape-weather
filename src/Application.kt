@@ -66,5 +66,3 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 }
-
-enum class TemperatureUnit { Celsius, Fahrenheit }
