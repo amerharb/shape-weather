@@ -51,13 +51,15 @@ fun Application.module(testing: Boolean = false) {
                 }
                 println("unit: $unit")
                 println("locations: $locations")
+
+                //TODO: replace mock date
                 call.respond("summary")
             }
 
             get("/locations/{locationId}") {
-                val locationId = call.parameters["locationId"]?.toIntOrNull()
-                if (locationId == null) {
-                    call.respond(HttpStatusCode.BadRequest, "location id must be valid int")
+                val locationId = call.parameters["locationId"]
+                if (locationId.isNullOrBlank()) {
+                    call.respond(HttpStatusCode.BadRequest, "location is not valid")
                     return@get
                 }
                 println("locationsId: $locationId")
