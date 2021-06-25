@@ -34,9 +34,12 @@ class ApplicationTest {
     @Test
     fun testLocations() {
         withTestApplication({ module(testing = true) }) {
-            handleRequest(HttpMethod.Get, "/weather/locations").apply {
+            handleRequest(HttpMethod.Get, "/weather/locations/5").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("location", response.content)
+                assertEquals("location:5", response.content)
+            }
+            handleRequest(HttpMethod.Get, "/weather/locations/").apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
             }
         }
     }

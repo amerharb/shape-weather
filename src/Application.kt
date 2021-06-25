@@ -38,8 +38,13 @@ fun Application.module(testing: Boolean = false) {
             call.respond("summary")
         }
 
-        get("/weather/locations") {
-            call.respond("location")
+        get("/weather/locations/{locationId}") {
+            val locationId = call.parameters["locationId"]?.toIntOrNull()
+            if (locationId == null) {
+                call.respond(HttpStatusCode.BadRequest, "location id must be valid int")
+                return@get
+            }
+            call.respond("location:$locationId")
         }
     }
 }
