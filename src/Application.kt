@@ -31,11 +31,15 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            call.respondText("Weather API Assignment for SHAPE", contentType = ContentType.Text.Plain)
         }
 
-        get("/json/gson") {
-            call.respond(mapOf("hello" to "world"))
+        get("/weather/summary") {
+            call.respond("summary")
+        }
+
+        get("/weather/locations") {
+            call.respond("location")
         }
     }
 }
