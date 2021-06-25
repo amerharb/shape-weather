@@ -69,6 +69,7 @@ fun Application.module(testing: Boolean = false) {
 
                 //TODO: replace mock date
                 call.respond(
+                    HttpStatusCode.OK,
                     Location(
                         location = locationId,
                         tempUnit = TemperatureUnit.Celsius,
