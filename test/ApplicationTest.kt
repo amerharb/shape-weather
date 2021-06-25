@@ -16,7 +16,27 @@ class ApplicationTest {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("HELLO WORLD!", response.content)
+                assertEquals("Weather API Assignment for SHAPE", response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testSummary() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Get, "/weather/summary").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("summary", response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testLocations() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Get, "/weather/locations").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("location", response.content)
             }
         }
     }
