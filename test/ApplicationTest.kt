@@ -52,7 +52,7 @@ class ApplicationTest {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(
                     gson.toJson(
-                        Summary(
+                        Location(
                             location = "cph",
                             tempUnit = TemperatureUnit.Celsius,
                             arrayOf(20, 18, 23, 30, 25)

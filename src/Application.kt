@@ -66,7 +66,7 @@ fun Application.module(testing: Boolean = false) {
 
                 //TODO: replace mock date
                 call.respond(
-                    Summary(
+                    Location(
                         location = locationId,
                         tempUnit = TemperatureUnit.Celsius,
                         arrayOf(20, 18, 23, 30, 25)
