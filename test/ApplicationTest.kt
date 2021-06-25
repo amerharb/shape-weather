@@ -1,11 +1,14 @@
 package com.amerharb.shape
 
+import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ApplicationTest {
+    var gson = Gson()
+
     @Test
     fun testRoot() {
         withTestApplication({ module(testing = true) }) {
@@ -47,7 +50,15 @@ class ApplicationTest {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/weather/locations/cph").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("location:cph", response.content)
+                assertEquals(
+                    gson.toJson(
+                        Summary(
+                            location = "cph",
+                            tempUnit = TemperatureUnit.Celsius,
+                            arrayOf(20, 18, 23, 30, 25)
+                        )
+                    ), response.content
+                )
             }
             handleRequest(HttpMethod.Get, "/weather/locations/").apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())

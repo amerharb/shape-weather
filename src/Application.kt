@@ -63,7 +63,15 @@ fun Application.module(testing: Boolean = false) {
                     return@get
                 }
                 println("locationsId: $locationId")
-                call.respond("location:$locationId")
+
+                //TODO: replace mock date
+                call.respond(
+                    Summary(
+                        location = locationId,
+                        tempUnit = TemperatureUnit.Celsius,
+                        arrayOf(20, 18, 23, 30, 25)
+                    )
+                )
             }
         }
     }
