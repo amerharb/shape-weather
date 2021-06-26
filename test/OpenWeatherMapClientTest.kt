@@ -7,19 +7,10 @@ import kotlinx.coroutines.*
 
 
 class OpenWeatherMapClientTest {
-    var gson = Gson()
-
-    @Test
+    @Test //Note: this is not unit test, it is just used for debugging
     fun getLocationTemp() {
         runBlocking {
             launch { println(OpenWeatherMapClient().getLocationTemp("Malmo")) }
         }
-//        withTestApplication({ module(testing = true) }) {
-//            handleRequest(HttpMethod.Get, "/").apply {
-//                assertEquals(HttpStatusCode.OK, response.status())
-//                assertEquals("Weather API Assignment for SHAPE", response.content)
-//            }
-//        }
     }
-
 }

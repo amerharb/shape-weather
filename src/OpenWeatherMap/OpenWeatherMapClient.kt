@@ -13,7 +13,7 @@ class OpenWeatherMapClient {
     private val baseRoute = "/data/2.5"
     private val client = HttpClient(Apache)
 
-    suspend fun getLocationTemp(location: String): Float {
+    suspend fun getLocationTemp(location: String): WeatherResponse {
         val response: HttpResponse = client.get("$host$baseRoute/weather") {
             headers {
             }
@@ -22,7 +22,6 @@ class OpenWeatherMapClient {
         }
         val body: String = response.receive()
         val gson = Gson()
-        val weather = gson.fromJson(body, WeatherResponse::class.java)
-        return weather.main.temp
+        return gson.fromJson(body, WeatherResponse::class.java)
     }
 }
