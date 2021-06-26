@@ -9,7 +9,7 @@
     <properties>
         <ktor_version>1.5.1</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin_version>1.4.21</kotlin_version>
+        <kotlin_version>1.5.20</kotlin_version>
         <logback_version>1.2.1</logback_version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
@@ -72,11 +72,14 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>3.0.0-M5</version>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>3.8.0</version>
                 <configuration><source>1.8</source><target>1.8</target></configuration>
             </plugin>
             <plugin>

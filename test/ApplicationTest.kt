@@ -83,7 +83,7 @@ class ApplicationTest {
                 )
             }
             handleRequest(HttpMethod.Get, "/weather/locations/").apply {
-                assertEquals(HttpStatusCode.NotFound, response.status())
+                assertEquals(HttpStatusCode.BadRequest, response.status())
             }
             handleRequest(HttpMethod.Get, "/weather/locations/  ").apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())
