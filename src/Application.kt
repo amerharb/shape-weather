@@ -28,7 +28,6 @@ fun Application.module(testing: Boolean = false) {
         gson {
         }
     }
-
     routing {
         get("/") {
             call.respondText("Weather API Assignment for SHAPE", contentType = ContentType.Text.Plain)
