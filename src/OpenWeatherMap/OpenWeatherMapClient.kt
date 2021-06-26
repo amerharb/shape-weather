@@ -1,5 +1,6 @@
-package com.amerharb.shape.OpenWeatherMap
+package com.amerharb.shape.openweathermap
 
+import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.apache.*
@@ -12,13 +13,16 @@ class OpenWeatherMapClient {
     private val baseRoute = "/data/2.5"
     private val client = HttpClient(Apache)
 
-    suspend fun getLocationTemp(location: String): String {
+    suspend fun getLocationTemp(location: String): Float {
         val response: HttpResponse = client.get("$host$baseRoute/weather") {
             headers {
             }
             parameter("q", location)
             parameter("appid", apiKey)
         }
-        return response.receive()
+        val body: String = response.receive()
+        val gson = Gson()
+        val weather = gson.fromJson(body, WeatherResponse::class.java)
+        return weather.main.temp
     }
 }

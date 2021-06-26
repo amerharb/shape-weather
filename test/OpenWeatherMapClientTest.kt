@@ -1,6 +1,6 @@
 package com.amerharb.shape
 
-import com.amerharb.shape.OpenWeatherMap.OpenWeatherMapClient
+import com.amerharb.shape.openweathermap.OpenWeatherMapClient
 import com.google.gson.Gson
 import kotlin.test.Test
 import kotlinx.coroutines.*
