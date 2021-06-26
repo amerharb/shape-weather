@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.amerharb.shape</groupId>
     <artifactId>weather</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.3</version>
     <name>weather</name>
     <description>weather</description>
     <properties>
-        <ktor_version>1.5.1</ktor_version>
+        <ktor_version>1.6.0</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin_version>1.5.20</kotlin_version>
         <logback_version>1.2.1</logback_version>
@@ -60,6 +60,21 @@
             <artifactId>ktor-server-tests</artifactId>
             <version>${ktor_version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-core</artifactId>
+            <version>${ktor_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-cio</artifactId>
+            <version>${ktor_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-apache</artifactId>
+            <version>${ktor_version}</version>
         </dependency>
     </dependencies>
     <build>
