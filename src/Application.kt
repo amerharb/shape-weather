@@ -1,7 +1,7 @@
 package com.amerharb.shape
 
-import com.amerharb.shape.models.Location
 import com.amerharb.shape.models.TemperatureUnit
+import com.amerharb.shape.service.DataProvider
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*

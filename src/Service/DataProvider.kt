@@ -1,4 +1,4 @@
-package com.amerharb.shape
+package com.amerharb.shape.service
 
 import com.amerharb.shape.models.Location
 import com.amerharb.shape.models.LocationTemp
@@ -12,7 +12,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
-import java.util.*
 
 /**
  *  DataProvider is single instance object that
