@@ -1,6 +1,7 @@
 package com.amerharb.shape
 
 import com.amerharb.shape.models.TemperatureUnit
+import com.amerharb.shape.service.DataProvider
 import kotlin.test.Test
 import kotlinx.coroutines.*
 
