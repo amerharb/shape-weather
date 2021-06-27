@@ -1,8 +1,6 @@
 package com.amerharb.shape
 
 import com.amerharb.shape.models.Location
-import com.amerharb.shape.models.LocationTemp
-import com.amerharb.shape.models.Summary
 import com.amerharb.shape.models.TemperatureUnit
 import io.ktor.application.*
 import io.ktor.features.*
@@ -38,7 +36,7 @@ fun Application.module(testing: Boolean = false) {
 
         route("/weather") {
             get("/summary") {
-                val unit = when (call.request.queryParameters["unit"]) {
+                val tempUnit = when (call.request.queryParameters["unit"]) {
                     "celsius" -> TemperatureUnit.Celsius
                     "fahrenheit" -> TemperatureUnit.Fahrenheit
                     else -> {
@@ -51,14 +49,10 @@ fun Application.module(testing: Boolean = false) {
                     call.respond(HttpStatusCode.BadRequest, "locations is not provided")
                     return@get
                 }
-                println("unit: $unit")
+                println("unit: $tempUnit")
                 println("locations: $locations")
 
-                //TODO: replace mock date
-                call.respond(Summary(
-                    tempUnit = unit,
-                    locations = locations.map { LocationTemp(location = it, temp = 10) }
-                ))
+                call.respond(DataProvider.getLocationsTemp(locations, tempUnit))
             }
 
             get("/locations/{locationId}") {
