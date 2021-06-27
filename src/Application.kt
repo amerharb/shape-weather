@@ -1,10 +1,13 @@
 package com.amerharb.shape
 
+import com.amerharb.shape.models.Location
+import com.amerharb.shape.models.LocationTemp
+import com.amerharb.shape.models.Summary
+import com.amerharb.shape.models.TemperatureUnit
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.http.*
-import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 

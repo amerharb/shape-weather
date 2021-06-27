@@ -1,3 +1,3 @@
-package com.amerharb.shape
+package com.amerharb.shape.models
 
 enum class TemperatureUnit { Celsius, Fahrenheit }

@@ -1,5 +1,9 @@
 package com.amerharb.shape
 
+import com.amerharb.shape.models.Location
+import com.amerharb.shape.models.LocationTemp
+import com.amerharb.shape.models.Summary
+import com.amerharb.shape.models.TemperatureUnit
 import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.server.testing.*
