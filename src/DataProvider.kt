@@ -12,6 +12,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
+import java.util.*
 
 /**
  *  DataProvider is single instance object that
@@ -23,8 +24,8 @@ object DataProvider {
     private val source = OpenWeatherMapClient()
     private val cacheTemp = mutableMapOf<String, LocationTemp>()
     private val cacheForecast = mutableMapOf<String, LocationForecast>()
-    private const val ttlForecast = 1000L * 60L * 60L * 5L // 5 hours
-    private const val ttlTemp = 1000L * 60L * 60L * 1L // 1 hours
+    private val ttlForecast = System.getenv("TTL_FORECAST").toLongOr(1000L * 60L * 60L * 5L) //18_000_000 5 hours
+    private val ttlTemp = System.getenv("TTL_TEMP").toLongOr(1000L * 60L * 60L * 1L) //3_600_000 1 hours
 
     fun getLocationsTemp(locations: List<String>, tempUnit: TemperatureUnit): Summary =
         runBlocking {
@@ -39,7 +40,7 @@ object DataProvider {
             Location(
                 location = location,
                 tempUnit = tempUnit,
-                nextFiveDaysTemp =  tempList.await(),
+                nextFiveDaysTemp = tempList.await(),
             )
         }
 
@@ -107,3 +108,5 @@ object DataProvider {
     private data class LocationForecast(val location: String, val nextFiveDays: List<Float>, val lastUpdate: Long)
     private data class LocationTemp(val location: String, val temp: Float, val lastUpdate: Long)
 }
+
+fun String.toLongOr(l: Long) = this.toLongOrNull() ?: l
