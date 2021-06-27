@@ -17,13 +17,14 @@ import java.time.ZoneOffset
  *  DataProvider is single instance object that
  *  1. take data from open weather map on demand
  *  2. cache it for next calls
- *  3. convert Kelvin to Cel or Feh
+ *  3. convert Kelvin to Celsius or Fahrenheit
  */
 object DataProvider {
     private val source = OpenWeatherMapClient()
-    private val cacheTemp = mutableMapOf<String, Float>()
+    private val cacheTemp = mutableMapOf<String, LocationTemp>()
     private val cacheForecast = mutableMapOf<String, LocationForecast>()
-    private val ttlForecast = 1000L * 60L * 60L * 5L // 5 hours
+    private const val ttlForecast = 1000L * 60L * 60L * 5L // 5 hours
+    private const val ttlTemp = 1000L * 60L * 60L * 1L // 1 hours
 
     fun getLocationsTemp(locations: List<String>, tempUnit: TemperatureUnit): Summary =
         runBlocking {
@@ -38,28 +39,39 @@ object DataProvider {
             Location(
                 location = location,
                 tempUnit = tempUnit,
-                nextDaysTemp = tempList.await(),
+                nextFiveDaysTemp =  tempList.await(),
             )
         }
 
     private suspend fun getCacheOrCallTemp(location: String, tempUnit: TemperatureUnit): Float {
-        val kTemp = if (cacheTemp.containsKey(location)) {
-            cacheTemp[location]!!
+        val cachedTemp = cacheTemp[location]
+        val tempInKelvin = if (
+            cachedTemp != null &&
+            (now() - cachedTemp.lastUpdate) < ttlTemp
+        ) {
+            cacheTemp[location]!!.temp
         } else {
             val temp = source.getLocationTemp(location).main.temp
-            cacheTemp[location] = temp
+            cacheTemp[location] = LocationTemp(
+                location = location,
+                temp = temp,
+                lastUpdate = now(),
+            )
             temp
         }
         return when (tempUnit) {
-            TemperatureUnit.Celsius -> kToC(kTemp)
-            TemperatureUnit.Fahrenheit -> kToF(kTemp)
+            TemperatureUnit.Celsius -> kToC(tempInKelvin)
+            TemperatureUnit.Fahrenheit -> kToF(tempInKelvin)
         }
     }
 
     private suspend fun getCacheOrCallForecast(location: String, tempUnit: TemperatureUnit): List<Float> {
-        val v = cacheForecast[location]
-        val nextFiveDaysInKelvin = if (v != null && (now() - v.lastUpdate < ttlForecast)) {
-            v.nextFiveDays
+        val cachedForecast = cacheForecast[location]
+        val nextFiveDaysInKelvin = if (
+            cachedForecast != null &&
+            (now() - cachedForecast.lastUpdate) < ttlForecast
+        ) {
+            cachedForecast.nextFiveDays
         } else {
             val forecastResponse = source.getForecast(location)
             val nextFiveDays = getNextFiveDaysFromForecastResponse(forecastResponse)
@@ -93,4 +105,5 @@ object DataProvider {
     }
 
     private data class LocationForecast(val location: String, val nextFiveDays: List<Float>, val lastUpdate: Long)
+    private data class LocationTemp(val location: String, val temp: Float, val lastUpdate: Long)
 }
