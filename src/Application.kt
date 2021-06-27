@@ -22,7 +22,7 @@ fun Application.module(testing: Boolean = false) {
         header(HttpHeaders.Authorization)
         header("MyCustomHeader")
         allowCredentials = true
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        anyHost()
     }
 
     install(ContentNegotiation) {
@@ -52,7 +52,10 @@ fun Application.module(testing: Boolean = false) {
                 println("unit: $tempUnit")
                 println("locations: $locations")
 
-                call.respond(DataProvider.getLocationsTemp(locations, tempUnit))
+                call.respond(
+                    HttpStatusCode.OK,
+                    DataProvider.getLocationsTemp(locations, tempUnit),
+                )
             }
 
             get("/locations/{locationId}") {
@@ -63,14 +66,9 @@ fun Application.module(testing: Boolean = false) {
                 }
                 println("locationsId: $locationId")
 
-                //TODO: replace mock date
                 call.respond(
                     HttpStatusCode.OK,
-                    Location(
-                        location = locationId,
-                        tempUnit = TemperatureUnit.Celsius,
-                        listOf(20, 18, 23, 30, 25)
-                    )
+                    DataProvider.getLocationsForecast(locationId),
                 )
             }
         }

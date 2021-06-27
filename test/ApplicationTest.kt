@@ -1,14 +1,11 @@
 package com.amerharb.shape
 
-import com.amerharb.shape.models.Location
-import com.amerharb.shape.models.LocationTemp
-import com.amerharb.shape.models.Summary
-import com.amerharb.shape.models.TemperatureUnit
 import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ApplicationTest {
     var gson = Gson()
@@ -27,6 +24,10 @@ class ApplicationTest {
     fun testSummary() {
         withTestApplication({ module(testing = true) }) {
             //todo: uncomment these where we have testing true in place from dataprovider
+            handleRequest(HttpMethod.Get, "/weather/summary?unit=celsius&locations=malmo").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                println(response.content)
+            }
 //            handleRequest(HttpMethod.Get, "/weather/summary?unit=celsius&locations=cph,mmx").apply {
 //                assertEquals(HttpStatusCode.OK, response.status())
 //                assertEquals(
@@ -72,21 +73,47 @@ class ApplicationTest {
     }
 
     @Test
+    fun testLocationsCaching() {
+        withTestApplication({ module(testing = true) }) {
+            var startTime = System.currentTimeMillis()
+            handleRequest(HttpMethod.Get, "/weather/locations/malmo").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                println(response.content)
+            }
+            val t1 = System.currentTimeMillis() - startTime
+
+            startTime = System.currentTimeMillis()
+            handleRequest(HttpMethod.Get, "/weather/locations/malmo").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                println(response.content)
+            }
+            val t2 = System.currentTimeMillis() - startTime
+
+            println("first call time: $t1")
+            println("second call time: $t2")
+            assertTrue("second call faster than first") { t2 < t1 }
+            assertTrue("second call less than 20 ms") { t2 < 10 }
+        }
+    }
+
+    @Test
     fun testLocations() {
         withTestApplication({ module(testing = true) }) {
-            handleRequest(HttpMethod.Get, "/weather/locations/cph").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals(
-                    gson.toJson(
-                        Location(
-                            location = "cph",
-                            tempUnit = TemperatureUnit.Celsius,
-                            listOf(20, 18, 23, 30, 25)
-                        )
-                    ),
-                    response.content,
-                )
-            }
+
+//            handleRequest(HttpMethod.Get, "/weather/locations/cph").apply {
+//                assertEquals(HttpStatusCode.OK, response.status())
+//                assertEquals(
+//                    gson.toJson(
+//                        Location(
+//                            location = "cph",
+//                            tempUnit = TemperatureUnit.Celsius,
+//                            listOf(20, 18, 23, 30, 25)
+//                        )
+//                    ),
+//                    response.content,
+//                )
+//            }
+
             handleRequest(HttpMethod.Get, "/weather/locations/").apply {
                 assertEquals(HttpStatusCode.NotFound, response.status())
             }
