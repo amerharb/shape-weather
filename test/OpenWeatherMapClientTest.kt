@@ -13,4 +13,11 @@ class OpenWeatherMapClientTest {
             launch { println(OpenWeatherMapClient().getLocationTemp("Malmo")) }
         }
     }
+
+    @Test //Note: this is not unit test, it is just used for debugging
+    fun getForecastTemp() {
+        runBlocking {
+            launch { println(OpenWeatherMapClient().getForecast("Malmo")) }
+        }
+    }
 }

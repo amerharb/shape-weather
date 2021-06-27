@@ -14,14 +14,25 @@ class OpenWeatherMapClient {
     private val client = HttpClient(Apache)
 
     suspend fun getLocationTemp(location: String): WeatherResponse {
-        val response: HttpResponse = client.get("$host$baseRoute/weather") {
+        val response = getClient("weather", location)
+        val body: String = response.receive()
+        val gson = Gson()
+        return gson.fromJson(body, WeatherResponse::class.java)
+    }
+
+    suspend fun getForecast(location: String): ForecastResponse {
+        val response = getClient("forecast", location)
+        val body: String = response.receive()
+        val gson = Gson()
+        return gson.fromJson(body, ForecastResponse::class.java)
+    }
+
+    private suspend fun getClient(route:String, location: String):HttpResponse{
+        return  client.get("$host$baseRoute/$route") {
             headers {
             }
             parameter("q", location)
             parameter("appid", apiKey)
         }
-        val body: String = response.receive()
-        val gson = Gson()
-        return gson.fromJson(body, WeatherResponse::class.java)
     }
 }
