@@ -102,13 +102,11 @@ object DataProvider {
 
     private fun getNextFiveDaysFromForecastResponse(forecastResponse: ForecastResponse): List<Float> {
         val todayNoonEpoch = LocalDateTime.of(LocalDate.now(), LocalTime.NOON).toEpochSecond(ZoneOffset.UTC)
-        return listOf(
-            forecastResponse.list.first { it.dt == todayNoonEpoch + (1 * (24 * 60 * 60)) }.main.temp,
-            forecastResponse.list.first { it.dt == todayNoonEpoch + (2 * (24 * 60 * 60)) }.main.temp,
-            forecastResponse.list.first { it.dt == todayNoonEpoch + (3 * (24 * 60 * 60)) }.main.temp,
-            forecastResponse.list.first { it.dt == todayNoonEpoch + (4 * (24 * 60 * 60)) }.main.temp,
-            forecastResponse.list.first { it.dt == todayNoonEpoch + (5 * (24 * 60 * 60)) }.main.temp,
-        )
+        val daySec = (24L * 60L * 60L)
+        return forecastResponse.list
+            .filter { it.dt % daySec == 43200L }
+            .take(5)
+            .map { it.main.temp }
     }
 
     fun getCountCallToApi() = countCallToApi
