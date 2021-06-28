@@ -27,6 +27,9 @@ class ApplicationTest {
                 assertEquals(HttpStatusCode.OK, response.status())
                 println(response.content)
             }
+            handleRequest(HttpMethod.Get, "/weather/summary?unit=celsius&locations=invalidCity").apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+            }
             handleRequest(HttpMethod.Get, "/weather/summary?").apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())
             }
@@ -45,6 +48,9 @@ class ApplicationTest {
     @Test
     fun testLocationsCaching() {
         withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Get, "/weather/locations/invalidCity").apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+            }
             var startTime = System.currentTimeMillis()
             handleRequest(HttpMethod.Get, "/weather/locations/malmo").apply {
                 assertEquals(HttpStatusCode.OK, response.status())

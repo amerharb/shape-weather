@@ -3,6 +3,7 @@ package com.amerharb.shape
 import com.amerharb.shape.models.TemperatureUnit
 import com.amerharb.shape.service.DataProvider
 import io.ktor.application.*
+import io.ktor.client.features.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.html.*
@@ -70,10 +71,14 @@ fun Application.module(testing: Boolean = false) {
                 println("unit: $tempUnit")
                 println("locations: $locations")
 
-                call.respond(
-                    HttpStatusCode.OK,
-                    DataProvider.getLocationsTemp(locations, tempUnit),
-                )
+                try {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        DataProvider.getLocationsTemp(locations, tempUnit),
+                    )
+                } catch (e: ClientRequestException) {
+                    call.respond(HttpStatusCode.NotFound)
+                }
             }
 
             get("/locations/{locationId}") {
@@ -84,10 +89,14 @@ fun Application.module(testing: Boolean = false) {
                 }
                 println("locationsId: $locationId")
 
-                call.respond(
-                    HttpStatusCode.OK,
-                    DataProvider.getLocationsForecast(locationId),
-                )
+                try {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        DataProvider.getLocationsForecast(locationId),
+                    )
+                } catch (e: ClientRequestException) {
+                    call.respond(HttpStatusCode.NotFound)
+                }
             }
         }
     }
