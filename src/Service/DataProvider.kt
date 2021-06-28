@@ -1,5 +1,6 @@
 package com.amerharb.shape.service
 
+import com.amerharb.shape.Util
 import com.amerharb.shape.models.Location
 import com.amerharb.shape.models.LocationTemp
 import com.amerharb.shape.models.Summary
@@ -23,8 +24,10 @@ object DataProvider {
     private val source = OpenWeatherMapClient()
     private val cacheTemp = mutableMapOf<String, LocationTemp>()
     private val cacheForecast = mutableMapOf<String, LocationForecast>()
-    private val ttlForecast = System.getenv("TTL_FORECAST").toLongOr(1000L * 60L * 60L * 5L) //18_000_000 5 hours
-    private val ttlTemp = System.getenv("TTL_TEMP").toLongOr(1000L * 60L * 60L * 1L) //3_600_000 1 hours
+    private val ttlForecast = Util.getLongFromEnvVar("TTL_FORECAST", (1000L * 60L * 60L * 5L)) //18_000_000 5 hours
+    private val ttlTemp = Util.getLongFromEnvVar("TTL_TEMP", (1000L * 60L * 60L * 1L)) //3_600_000 1 hours
+    private var countCallToApi = 0L
+    private var countCallFromCache = 0L
 
     fun getLocationsTemp(locations: List<String>, tempUnit: TemperatureUnit): Summary =
         runBlocking {
@@ -49,9 +52,11 @@ object DataProvider {
             cachedTemp != null &&
             (now() - cachedTemp.lastUpdate) < ttlTemp
         ) {
+            countCallFromCache++
             cacheTemp[location]!!.temp
         } else {
             val temp = source.getLocationTemp(location).main.temp
+            countCallToApi++
             cacheTemp[location] = LocationTemp(
                 location = location,
                 temp = temp,
@@ -71,9 +76,11 @@ object DataProvider {
             cachedForecast != null &&
             (now() - cachedForecast.lastUpdate) < ttlForecast
         ) {
+            countCallFromCache++
             cachedForecast.nextFiveDays
         } else {
             val forecastResponse = source.getForecast(location)
+            countCallToApi++
             val nextFiveDays = getNextFiveDaysFromForecastResponse(forecastResponse)
 
             cacheForecast[location] = LocationForecast(
@@ -104,8 +111,9 @@ object DataProvider {
         )
     }
 
+    fun getCountCallToApi() = countCallToApi
+    fun getCountCallFromCache() = countCallFromCache
+
     private data class LocationForecast(val location: String, val nextFiveDays: List<Float>, val lastUpdate: Long)
     private data class LocationTemp(val location: String, val temp: Float, val lastUpdate: Long)
 }
-
-fun String.toLongOr(l: Long) = this.toLongOrNull() ?: l

@@ -15,7 +15,6 @@ class ApplicationTest {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Weather API Assignment for SHAPE", response.content)
             }
         }
     }
@@ -28,35 +27,6 @@ class ApplicationTest {
                 assertEquals(HttpStatusCode.OK, response.status())
                 println(response.content)
             }
-//            handleRequest(HttpMethod.Get, "/weather/summary?unit=celsius&locations=cph,mmx").apply {
-//                assertEquals(HttpStatusCode.OK, response.status())
-//                assertEquals(
-//                    gson.toJson(
-//                        Summary(
-//                            tempUnit = TemperatureUnit.Celsius,
-//                            locations = listOf(
-//                                LocationTemp("cph", 10F),
-//                                LocationTemp("mmx", 10F),
-//                            ),
-//                        )
-//                    ),
-//                    response.content,
-//                )
-//            }
-//            handleRequest(HttpMethod.Get, "/weather/summary?unit=fahrenheit&locations=cph,sto").apply {
-//                assertEquals(HttpStatusCode.OK, response.status())
-//                assertEquals(
-//                    gson.toJson(
-//                        Summary(
-//                            tempUnit = TemperatureUnit.Fahrenheit,
-//                            locations = listOf(
-//                                LocationTemp("cph", 10F),
-//                                LocationTemp("sto", 10F),
-//                            ),
-//                        )
-//                    ),
-//                    response.content,
-//                )            }
             handleRequest(HttpMethod.Get, "/weather/summary?").apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())
             }
@@ -99,21 +69,6 @@ class ApplicationTest {
     @Test
     fun testLocations() {
         withTestApplication({ module(testing = true) }) {
-
-//            handleRequest(HttpMethod.Get, "/weather/locations/cph").apply {
-//                assertEquals(HttpStatusCode.OK, response.status())
-//                assertEquals(
-//                    gson.toJson(
-//                        Location(
-//                            location = "cph",
-//                            tempUnit = TemperatureUnit.Celsius,
-//                            listOf(20, 18, 23, 30, 25)
-//                        )
-//                    ),
-//                    response.content,
-//                )
-//            }
-
             handleRequest(HttpMethod.Get, "/weather/locations/").apply {
                 assertEquals(HttpStatusCode.NotFound, response.status())
             }

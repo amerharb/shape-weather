@@ -5,9 +5,11 @@ import com.amerharb.shape.service.DataProvider
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
+import io.ktor.html.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.html.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -31,7 +33,23 @@ fun Application.module(testing: Boolean = false) {
     }
     routing {
         get("/") {
-            call.respondText("Weather API Assignment for SHAPE", contentType = ContentType.Text.Plain)
+            call.respondHtml(HttpStatusCode.OK) {
+                head {
+                    title { +"SHAPE | Weather API Assigment" }
+                }
+                body {
+                    h1 { +"SHAPE" }
+                    h2 { +"Weather API Assigment" }
+                    h3 { +"Web API calls:" }
+                    p { +"http://weather.amerharb.com/weather/locations/{Location Name}" }
+                    p { +"http://weather.amerharb.com/weather/summary?unit={celsius|fahrenheit}&locations={Location Name}" }
+                    p { }
+                    p { }
+                    h3 { +"Statistics:" }
+                    p { +"call to OpenWeatherMap: ${DataProvider.getCountCallToApi()}" }
+                    p { +"call from Cache: ${DataProvider.getCountCallFromCache()}" }
+                }
+            }
         }
 
         route("/weather") {
